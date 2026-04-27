@@ -1,10 +1,9 @@
 {
   "name": "ai-roaster",
   "version": "1.0.0",
-  "main": "server.js",
   "type": "module",
   "scripts": {
-    "local": "node server.js"
+    "local": "node local-server.js"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RoastBot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            padding: 40px 16px;
+            min-height: 100vh;
+        }
+
+        .wrap {
+            width: 100%;
+            max-width: 560px;
+            background: #111;
+            border-radius: 12px;
+            padding: 2rem;
+            color: #f0f0f0;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 52px;
+            color: #ff4e00;
+            letter-spacing: 4px;
+            line-height: 1;
+        }
+
+        .sub {
+            font-size: 11px;
+            color: #444;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            margin-top: 2px;
+        }
+
+        label {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #666;
+            display: block;
+            margin-bottom: 6px;
+            margin-top: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #252525;
+            border-radius: 6px;
+            color: #f0f0f0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            padding: 10px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #ff4e00;
+        }
+
+        select option {
+            background: #1a1a1a;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            background: #ff4e00;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            letter-spacing: 3px;
+            padding: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #e04000;
+        }
+
+        button:disabled {
+            background: #222;
+            color: #444;
+            cursor: not-allowed;
+        }
+
+        #output {
+            margin-top: 24px;
+            background: #111;
+            border-left: 3px solid #ff4e00;
+            border-radius: 6px;
+            padding: 18px;
+            font-size: 14px;
+            line-height: 1.8;
+            display: none;
+            white-space: pre-wrap;
+        }
+
+        .tag {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ff4e00;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            margin-top: 14px;
+            font-size: 11px;
+            color: #2a2a2a;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <h1>RoastBot</h1>
+        <div class="sub">AI-powered humiliation service</div>
+
+        <label>Your name</label>
+        <input id="name" type="text" placeholder="e.g. Utsarga" maxlength="40">
+
+        <div class="grid">
+            <div>
+                <label>Job / occupation</label>
+                <input id="job" placeholder="e.g. Prompt Engineer" maxlength="50">
+            </div>
+            <div>
+                <label>A hobby</label>
+                <input id="hobby" placeholder="e.g. gaming" maxlength="50">
+            </div>
+        </div>
+
+        <div class="grid">
+            <div>
+                <label>A personal flaw</label>
+                <input id="flaw" placeholder="e.g. procrastinator" maxlength="50">
+            </div>
+            <div>
+                <label>Roast intensity</label>
+                <select id="intensity">
+                    <option value="mild">Mild — friendly</option>
+                    <option value="medium" selected>Medium — honest</option>
+                    <option value="savage">Savage — no mercy</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="btn" onclick="fireRoast()">ROAST ME</button>
+
+        <div id="output">
+            <span class="tag">your roast</span>
+            <span id="roast-text"></span>
+        </div>
+
+        <div class="footer">powered by groq · free · zero chill</div>
+    </div>
+
+    <script>
+        const INTENSITY = {
+            mild: 'friendly and lighthearted, poking fun gently',
+            medium: 'honest and sharp, holding nothing back but staying funny',
+            savage: 'absolutely ruthless and savage — brutal but still comedic, zero mercy'
+        };
+
+        async function fireRoast() {
+            const name = document.getElementById('name').value.trim();
+            if (!name) { alert('Enter your name so we know who to roast!'); return; }
+
+            const btn = document.getElementById('btn');
+            const output = document.getElementById('output');
+            const roastText = document.getElementById('roast-text');
+
+            btn.disabled = true;
+            btn.textContent = 'LOADING YOUR DESTRUCTION...';
+            output.style.display = 'none';
+
+            try {
+                const res = await fetch('/api/roast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        job: document.getElementById('job').value.trim(),
+                        hobby: document.getElementById('hobby').value.trim(),
+                        flaw: document.getElementById('flaw').value.trim(),
+                        intensity: document.getElementById('intensity').value
+                    })
+                });
+                const data = await res.json();
+                roastText.textContent = data.roast || 'Even the AI felt bad for you.';
+                output.style.display = 'block';
+            } catch (e) {
+                roastText.textContent = 'Something went wrong. The AI is having an existential crisis.';
+                output.style.display = 'block';
+            }
+
+            btn.disabled = false;
+            btn.textContent = 'ROAST ME AGAIN';
+        }
+    </script>
+</body>
+
+</html>

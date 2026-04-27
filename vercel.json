@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/roast.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/roast", "dest": "/api/roast.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}

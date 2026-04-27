@@ -169,9 +169,9 @@
             <div>
                 <label>Roast intensity</label>
                 <select id="intensity">
-                    <option value="mild">Mild — friendly</option>
-                    <option value="medium" selected>Medium — honest</option>
-                    <option value="savage">Savage — no mercy</option>
+                    <option value="mild">Mild - friendly</option>
+                    <option value="medium" selected>Medium - honest</option>
+                    <option value="savage">Savage - no mercy</option>
                 </select>
             </div>
         </div>
@@ -183,14 +183,14 @@
             <span id="roast-text"></span>
         </div>
 
-        <div class="footer">powered by groq · free · zero chill</div>
+        <div class="footer">powered by groq - free - zero chill</div>
     </div>
 
     <script>
         const INTENSITY = {
             mild: 'friendly and lighthearted, poking fun gently',
             medium: 'honest and sharp, holding nothing back but staying funny',
-            savage: 'absolutely ruthless and savage — brutal but still comedic, zero mercy'
+            savage: 'absolutely ruthless and savage - brutal but still comedic, zero mercy'
         };
 
         async function fireRoast() {
@@ -218,7 +218,7 @@
                     })
                 });
                 const data = await res.json();
-                roastText.textContent = data.roast || 'Even the AI felt bad for you.';
+                roastText.textContent = data.roast || data.error || 'Even the AI felt bad for you.';
                 output.style.display = 'block';
             } catch (e) {
                 roastText.textContent = 'Something went wrong. The AI is having an existential crisis.';
